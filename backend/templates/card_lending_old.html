@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Card - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        :root {
+            --primary: #5e72e4;
+            --secondary: #11cdef;
+            --accent: #2dce89;
+            --dark: #32325d;
+            --light-bg: #f8f9fe;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            background: #f8f9fe;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border-bottom: 3px solid var(--primary);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            color: var(--dark) !important;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .form-container {
+            margin-top: 0;
+            padding: 40px 20px;
+        }
+
+        .card-main {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+            color: white;
+            padding: 36px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .card-header-custom::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+        }
+
+        .card-header-custom h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header-custom p {
+            opacity: 0.95;
+            margin: 0;
+            font-size: 0.9rem;
+
+            .card-body-custom {
+                padding: 32px;
+                background: white;
+            }
+
+            .form-section {
+                margin-bottom: 24px;
+            }
+
+            .form-section:last-child {
+                margin-bottom: 0;
+            }
+
+            .section-label {
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: #5e72e4;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                margin-bottom: 12px;
+                display: block;
+                opacity: 0.8;
+            }
+
+            .form-label {
+                font-size: 1.05rem;
+                font-weight: 600;
+                color: #32325d;
+                margin-bottom: 12px;
+            }
+
+            .form-control,
+            .form-select {
+                border: 1.5px solid var(--border-color);
+                border-radius: 8px;
+                padding: 11px 15px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                background: white;
+                color: #32325d;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #5e72e4;
+                box-shadow: 0 0 0 0.15rem rgba(94, 114, 228, 0.1);
+            }
+
+            .form-select-lg,
+            .form-control-lg {
+                padding: 13px 16px;
+                font-size: 1.05rem;
+            }
+
+            .input-group-text {
+                border: 1.5px solid var(--border-color);
+                background: #f8f9fe;
+                border-right: none;
+                font-weight: 600;
+                color: #5e72e4;
+            }
+
+            .input-group .form-control {
+                border-left: none;
+            }
+
+            .help-text {
+                font-size: 0.9rem;
+                color: #7e8299;
+                margin-top: 8px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-weight: 500;
+            }
+
+            .help-icon {
+                font-size: 0.85rem;
+            }
+
+            .charges-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                padding: 16px;
+                background: #f8f9fe;
+                border-radius: 10px 10px 0 0;
+                border: 1.5px solid var(--border-color);
+                border-bottom: none;
+                transition: all 0.3s ease;
+            }
+
+            .charges-card-header:hover {
+                background: #f0f1f7;
+            }
+
+            .charges-card-header h5 {
+                margin: 0;
+                font-size: 1rem;
+                font-weight: 600;
+                color: #32325d;
+            }
+
+            .collapse-icon {
+                font-size: 1.2rem;
+                transition: transform 0.3s ease;
+            }
+
+            .charges-card-header.collapsed .collapse-icon {
+                transform: rotate(-90deg);
+            }
+
+            .charges-card {
+                border: 1.5px solid var(--border-color);
+                border-radius: 10px;
+                margin: 24px 0;
+                overflow: hidden;
+            }
+
+            .charges-card-body {
+                padding: 24px;
+                background: #f8f9fe;
+                max-height: 500px;
+                overflow: hidden;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .charges-card-body.collapsed {
+                max-height: 0;
+                padding: 0 24px;
+            }
+
+            .charge-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 14px 0;
+                font-size: 1rem;
+            }
+
+            .charge-row span:first-child {
+                color: #64748b;
+                font-weight: 500;
+            }
+
+            .charge-row strong {
+                color: #32325d;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            .charge-row.total {
+                border-top: 2px solid white;
+                padding-top: 18px;
+                margin-top: 18px;
+                font-size: 1.15rem;
+                background: white;
+                padding: 18px;
+                margin: 18px -28px -28px;
+                margin-bottom: 20px;
+                border-radius: 0 0 10px 10px;
+            }
+
+            .charge-row.total span:first-child {
+                font-weight: 700;
+                color: #32325d;
+            }
+
+            .charge-row.total strong {
+                color: #5e72e4;
+                font-size: 1.4rem;
+                font-weight: 700;
+            }
+
+            .breakdown-detail {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 16px;
+                margin-top: 24px;
+                padding-top: 24px;
+                border-top: 1.5px solid white;
+            }
+
+            .breakdown-item {
+                text-align: center;
+                padding: 16px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+            }
+
+            .breakdown-item-icon {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+
+            .breakdown-item-label {
+                font-size: 0.8rem;
+                color: #7e8299;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .breakdown-item-value {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #5e72e4;
+            }
+
+            .btn-submit {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.1rem;
+                font-weight: 700;
+                border: none;
+                border-radius: 8px;
+                background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+                color: white;
+                transition: all 0.3s ease;
+                margin-top: 20px;
+                letter-spacing: 0.3px;
+            }
+
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(94, 114, 228, 0.3);
+                color: white;
+            }
+
+            .btn-submit:active {
+                transform: translateY(0);
+            }
+
+            .error-alert {
+                border: none;
+                border-radius: 8px;
+                padding: 16px 18px;
+                margin-top: 20px;
+                display: none;
+                background: #fee;
+                color: #c53030;
+                border-left: 4px solid #c53030;
+                font-weight: 500;
+            }
+
+            @media (max-width: 768px) {
+                .card-body-custom {
+                    padding: 24px;
+                }
+
+                .card-header-custom {
+                    padding: 40px 24px;
+                }
+
+                .card-header-custom h1 {
+                    font-size: 1.7rem;
+                }
+
+                .breakdown-detail {
+                    grid-template-columns: 1fr;
+                }
+
+                .charge-row {
+                    font-size: 0.95rem;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/"><strong>💳 CredHand</strong></a>
+        </div>
+    </nav>
+
+    <div class="container form-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card card-main">
+                    <div class="card-header-custom">
+                        <h1>Request Credit Card</h1>
+                        <p>Quick & Secure Card Request</p>
+                    </div>
+
+                    <div class="card-body-custom">
+                        <form id="lendingForm">
+                            <!-- Step 1: Purchase Type -->
+                            <div class="form-section">
+                                <span class="section-label">Step 1 of 3</span>
+                                <label for="purchaseType" class="form-label">What's your purpose?</label>
+                                <select class="form-select form-select-lg" id="purchaseType" required>
+                                    <option value="">Select a category</option>
+                                    <option value="flight">✈️ Flight Booking</option>
+                                    <option value="shopping">🛍️ Online Shopping</option>
+                                    <option value="ecomm">📦 E-Commerce</option>
+                                    <option value="bills">📄 Bills</option>
+                                    <option value="rent">🏠 Rent</option>
+                                    <option value="others">⭐ Others</option>
+                                </select>
+                                <div class="help-text">
+                                    <span class="help-icon">ℹ️</span>
+                                    <span>For reference only - doesn't affect your card choice</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Select Card -->
+                            <div class="form-section">
+                                <span class="section-label">Step 2 of 3</span>
+                                <label for="cardSelect" class="form-label">Which card suits you?</label>
+                                <div id="cardSelect" class="row">
+                                    <div class="col-12 text-center py-4">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Amount -->
+                            <div class="form-section">
+                                <span class="section-label">Step 3 of 3</span>
+                                <label for="amount" class="form-label">How much do you need?</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="amount"
+                                        placeholder="Enter amount (₹10 - ₹1,00,000)" min="10" max="100000" required>
+                                </div>
+                                <div class="help-text">
+                                    <span class="help-icon">✓</span>
+                                    <span>Min: ₹10 | Max: ₹1,00,000</span>
+                                </div>
+                            </div>
+
+                            <!-- Service Charges Summary -->
+                            <div class="charges-card">
+                                <div class="charges-card-header collapsed" id="chargesHeader">
+                                    <h5>💰 View Charge Breakdown</h5>
+                                    <span class="collapse-icon">▶</span>
+                                </div>
+                                <div class="charges-card-body collapsed" id="chargesBody">
+                                    <div class="charge-row">
+                                        <span>Amount to Borrow</span>
+                                        <strong id="displayAmount">₹0.00</strong>
+                                    </div>
+                                    <div class="charge-row">
+                                        <span>Service Charge</span>
+                                        <strong id="displayCharge">₹0.00</strong>
+                                    </div>
+                                    <div class="charge-row total">
+                                        <span>Total Payment</span>
+                                        <strong id="displayTotal">₹0.00</strong>
+                                    </div>
+                                    <div class="breakdown-detail" id="chargeBreakdown"></div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-submit">
+                                Proceed to Payment
+                            </button>
+                        </form>
+
+                        <div id="errorAlert" class="error-alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/lending.js"></script>
+</body>
+
+</html>

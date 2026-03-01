@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <style>
+        body {
+            background: var(--light);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: var(--white);
+            margin: 0 0 0.5rem;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .transaction-item {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--spacing-lg);
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .transaction-details {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: var(--spacing-lg);
+            align-items: start;
+        }
+
+        .transaction-icon {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--light);
+            border-radius: var(--radius-lg);
+        }
+
+        .transaction-info h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.05rem;
+        }
+
+        .transaction-meta {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .transaction-amount {
+            text-align: right;
+        }
+
+        .amount-primary {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .amount-charge {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            margin-right: 0.5rem;
+        }
+
+        .status-success {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-failed {
+            background: #fef2f2;
+            color: #7f1d1d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px dashed var(--gray-300);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        .pagination button,
+        .pagination a {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .pagination button:hover,
+        .pagination a:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .export-btn {
+            margin-bottom: 2rem;
+        }
+
+        /* Profile Menu */
+        .profile-section {
+            position: relative;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-btn:hover {
+            background: var(--light);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            min-width: 200px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .profile-menu.active {
+            display: block;
+        }
+
+        .profile-menu a,
+        .profile-menu button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            text-align: left;
+            color: var(--gray-700);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .profile-menu a:hover,
+        .profile-menu button:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .profile-menu a:first-child,
+        .profile-menu button:first-child {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem;
+        }
+
+        .profile-menu .logout-btn {
+            color: var(--danger);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .profile-menu .logout-btn:hover {
+            background: #fef2f2;
+            color: #7f1d1d;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-item {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .transaction-details {
+                grid-template-columns: auto 1fr;
+            }
+
+            .transaction-amount {
+                text-align: left;
+                padding-top: var(--spacing-md);
+                border-top: 1px solid var(--gray-200);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0 1rem;
+            }
+
+            .header-left {
+                flex: 0 0 auto;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .header-right {
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .nav-links a {
+                padding: 0.5rem;
+            }
+
+            .profile-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .transaction-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/" class="logo">💳 CredHand</a>
+            </div>
+            <div class="header-right">
+                <ul class="nav-links">
+                    <li><a href="/dashboard/">Dashboard</a></li>
+                    <li><a href="/transaction_history/">History</a></li>
+                </ul>
+                <div class="profile-section">
+                    <button class="profile-btn" onclick="toggleProfileMenu()">👤</button>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="/auth/profile/">My Profile</a>
+                        <a href="/auth/settings/">Settings</a>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Transaction History</h1>
+            <p>View and manage all your credit card requests</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label for="filterStatus">Status</label>
+                <select id="filterStatus" class="form-control form-select">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterType">Type</label>
+                <select id="filterType" class="form-control form-select">
+                    <option value="">All Types</option>
+                    <option value="flight">Flight Booking</option>
+                    <option value="shopping">Online Shopping</option>
+                    <option value="bills">Bills</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterDate">Date Range</label>
+                <input type="date" id="filterDate" class="form-control">
+            </div>
+        </div>
+
+        <!-- Export Button -->
+        <div class="export-btn">
+            <button class="btn btn-secondary">📥 Export as CSV</button>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="transactions-list" id="transactionsList">
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h2>No transactions yet</h2>
+                <p>You haven't requested any credit cards. Let's get started!</p>
+                <a href="/card_lending/" class="btn btn-primary">Request Your First Card</a>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script>
+        let allTransactions = [];
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await api.getTransactionList();
+                if (response.status === 'success') {
+                    allTransactions = response.transactions || [];
+                    displayTransactions(allTransactions);
+                }
+            } catch (error) {
+                console.error('Failed to load transactions:', error);
+            }
+
+            // Add filter event listeners
+            document.getElementById('filterStatus').addEventListener('change', filterTransactions);
+            document.getElementById('filterType').addEventListener('change', filterTransactions);
+            document.getElementById('filterDate').addEventListener('change', filterTransactions);
+        });
+
+        function displayTransactions(transactions) {
+            const list = document.getElementById('transactionsList');
+
+            if (!transactions || transactions.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h2>No transactions found</h2>
+                        <p>Try adjusting your filters or request a new card.</p>
+                        <a href="/card_lending/" class="btn btn-primary">Request a Card</a>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => {
+                const statusClass = `status-${t.status === 'completed' ? 'success' : t.status === 'pending' ? 'pending' : 'failed'}`;
+                const icon = t.status === 'completed' ? '✓' : t.status === 'pending' ? '⏳' : '✕';
+
+                return `
+                    <div class="transaction-item">
+                        <div class="transaction-details">
+                            <div class="transaction-icon">${icon}</div>
+                            <div class="transaction-info">
+                                <h3>${t.card_name || 'Credit Card'}</h3>
+                                <div class="transaction-meta">
+                                    <span class="status-badge ${statusClass}">${t.status}</span>
+                                    ${new Date(t.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transaction-amount">
+                            <div class="amount-primary">₹${parseFloat(t.amount).toFixed(2)}</div>
+                            <div class="amount-charge">+ ₹${parseFloat(t.total_amount - t.amount).toFixed(2)} charge</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterTransactions() {
+            const status = document.getElementById('filterStatus').value;
+            const type = document.getElementById('filterType').value;
+            const date = document.getElementById('filterDate').value;
+
+            let filtered = allTransactions;
+
+            if (status) {
+                filtered = filtered.filter(t => t.status === status);
+            }
+
+            if (type) {
+                filtered = filtered.filter(t => t.purchase_type === type);
+            }
+
+            if (date) {
+                filtered = filtered.filter(t => {
+                    const txDate = new Date(t.created_at).toISOString().split('T')[0];
+                    return txDate === date;
+                });
+            }
+
+            displayTransactions(filtered);
+        }
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const profileSection = document.querySelector('.profile-section');
+            if (profileSection && !profileSection.contains(event.target)) {
+                const menu = document.getElementById('profileMenu');
+                if (menu) menu.classList.remove('active');
+            }
+        });
+
+        function logout() {
+            window.location.href = '/auth/logout/';
+        }
+    </script>
+</body>
+
+</html>

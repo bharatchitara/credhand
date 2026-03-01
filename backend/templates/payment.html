@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Payment - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--light) 0%, #f3f0ff 100%);
+            min-height: 100vh;
+        }
+
+        .payment-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .payment-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .payment-header h1 {
+            color: var(--white);
+            margin: 0 0 0.5rem;
+            font-size: 2rem;
+        }
+
+        .payment-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .payment-body {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 0;
+        }
+
+        .payment-form {
+            padding: 2rem;
+            border-right: 1px solid var(--gray-200);
+        }
+
+        .payment-summary {
+            padding: 2rem;
+            background: var(--light);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .summary-item.total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            padding-top: 1rem;
+            border-top: 2px solid var(--gray-300);
+            color: var(--primary);
+        }
+
+        .summary-item label {
+            color: var(--gray-600);
+        }
+
+        .summary-item.total label {
+            color: var(--dark);
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #ecfdf5;
+            border-radius: var(--radius-md);
+            color: #065f46;
+            font-size: 0.9rem;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .pay-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-4px);
+            color: var(--dark);
+        }
+
+        .alert {
+            border: none;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: #7f1d1d;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .payment-body {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-form {
+                border-right: none;
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-container {
+                margin: 1rem auto;
+            }
+
+            .payment-header {
+                padding: 1.5rem;
+            }
+
+            .payment-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .payment-form,
+            .payment-summary {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/" class="logo">💳 CredHand</a>
+            </div>
+            <div class="header-right">
+                <ul class="nav-links">
+                    <li><a href="/dashboard/">Dashboard</a></li>
+                    <li><a href="/transaction_history/">Transactions</a></li>
+                </ul>
+                <div class="profile-section">
+                    <button class="profile-btn" onclick="toggleProfileMenu()">👤</button>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="/auth/profile/">My Profile</a>
+                        <a href="/auth/settings/">Settings</a>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="payment-container">
+        <a href="/card_lending/" class="back-link">← Back to Request</a>
+
+        <div class="payment-card">
+            <div class="payment-header">
+                <h1>Complete Payment</h1>
+                <p>Secure payment powered by Razorpay</p>
+            </div>
+
+            <div class="payment-body">
+                <!-- Payment Form -->
+                <div class="payment-form">
+                    <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+
+                    <!-- Personal Information (read-only) -->
+                    <div class="form-section">
+                        <h3>📋 Personal Information</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullName" readonly
+                                value="{{ user.get_full_name|default:user.username }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="email" readonly value="{{ user.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phone" readonly value="{{ user.phone|default:'+91' }}">
+                        </div>
+                    </div>
+
+                    <!-- Security Info -->
+                    <div class="security-info">
+                        <span>🔒</span>
+                        <span>Your payment is secured with 256-bit encryption</span>
+                    </div>
+
+                    <!-- Pay Button -->
+                    <button class="pay-button" id="payButton" onclick="openRazorpayModal()">Pay Now</button>
+                </div>
+
+                <!-- Payment Summary -->
+                <div class="payment-summary">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 700;">Order Summary</h3>
+
+                    <div class="summary-item">
+                        <label>Card Request Amount</label>
+                        <span id="summaryAmount">₹0.00</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <label>Service Charge (5%)</label>
+                        <span id="summaryCharge">₹0.00</span>
+                    </div>
+
+                    <div class="summary-item total">
+                        <label>Total Amount</label>
+                        <span id="summaryTotal">₹0.00</span>
+                    </div>
+
+                    <div
+                        style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-300); font-size: 0.85rem; color: var(--gray-600); line-height: 1.6;">
+                        <p style="margin: 0 0 0.5rem;"><strong>✓ 100% Secure</strong></p>
+                        <p style="margin: 0;">Your transaction is protected by
+                            industry-leading encryption standards.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── Razorpay-style Checkout Modal ───────── -->
+    <div id="rzpOverlay"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="display:flex;width:620px;max-width:96vw;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);font-family:'Inter',sans-serif;">
+
+            <!-- Left panel (Razorpay blue) -->
+            <div
+                style="background:#2d74da;color:#fff;width:220px;min-width:220px;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1rem;">
+                <div style="font-size:1.6rem;">💳</div>
+                <div>
+                    <div style="font-size:.75rem;opacity:.75;letter-spacing:.05em;text-transform:uppercase;">Paying to
+                    </div>
+                    <div style="font-weight:700;font-size:1rem;margin-top:.25rem;">CredHand</div>
+                </div>
+                <div>
+                    <div style="font-size:.75rem;opacity:.75;letter-spacing:.05em;text-transform:uppercase;">Amount
+                    </div>
+                    <div style="font-weight:800;font-size:1.6rem;margin-top:.25rem;" id="rzpAmount">₹0.00</div>
+                </div>
+                <div style="margin-top:auto;font-size:.7rem;opacity:.6;">Secured by<br><strong>Razorpay</strong></div>
+            </div>
+
+            <!-- Right panel -->
+            <div style="background:#fff;flex:1;display:flex;flex-direction:column;">
+
+                <!-- Close -->
+                <div style="display:flex;justify-content:flex-end;padding:.75rem 1rem 0;">
+                    <button onclick="closeRazorpayModal()"
+                        style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#666;">✕</button>
+                </div>
+
+                <!-- Tabs -->
+                <div style="display:flex;border-bottom:2px solid #eee;padding:0 1.5rem;">
+                    <button class="rzp-tab active" onclick="switchTab('upi',this)"
+                        style="padding:.6rem 1rem;border:none;background:none;font-weight:600;font-size:.85rem;cursor:pointer;border-bottom:2px solid #2d74da;margin-bottom:-2px;">UPI</button>
+                    <button class="rzp-tab" onclick="switchTab('card',this)"
+                        style="padding:.6rem 1rem;border:none;background:none;font-weight:600;font-size:.85rem;cursor:pointer;color:#888;">Debit
+                        Card</button>
+                </div>
+
+                <!-- Tab: UPI -->
+                <div id="tab-upi" style="padding:1.5rem;flex:1;">
+                    <div style="font-size:.85rem;color:#555;margin-bottom:.75rem;">Enter your UPI ID</div>
+                    <input id="upiId" type="text" placeholder="yourname@upi"
+                        style="width:100%;padding:.65rem .9rem;border:1.5px solid #ddd;border-radius:6px;font-size:.9rem;">
+                    <div style="font-size:.75rem;color:#aaa;margin-top:.4rem;">e.g. 9876543210@paytm</div>
+                    <button onclick="submitPayment()"
+                        style="margin-top:1.25rem;width:100%;padding:.75rem;background:#2d74da;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:.95rem;cursor:pointer;">Pay
+                        ₹<span class="rzpAmountBtn">0.00</span></button>
+                </div>
+
+                <!-- Tab: Card -->
+                <div id="tab-card" style="padding:1.5rem;flex:1;display:none;">
+                    <div style="font-size:.85rem;color:#555;margin-bottom:.75rem;">Card Number</div>
+                    <input id="rzpCardNum" type="text" placeholder="1234 5678 9012 3456" maxlength="19"
+                        oninput="let v=this.value.replace(/\D/g,'');this.value=v.replace(/(\d{4})/g,'$1 ').trim();"
+                        style="width:100%;padding:.65rem .9rem;border:1.5px solid #ddd;border-radius:6px;font-size:.9rem;margin-bottom:.75rem;">
+                    <div style="display:flex;gap:.75rem;">
+                        <div style="flex:1;">
+                            <div style="font-size:.8rem;color:#555;margin-bottom:.35rem;">Expiry</div>
+                            <input id="rzpExpiry" type="text" placeholder="MM/YY" maxlength="5"
+                                oninput="let v=this.value.replace(/\D/g,'');if(v.length>=2)v=v.slice(0,2)+'/'+v.slice(2,4);this.value=v;"
+                                style="width:100%;padding:.65rem .9rem;border:1.5px solid #ddd;border-radius:6px;font-size:.9rem;">
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:.8rem;color:#555;margin-bottom:.35rem;">CVV</div>
+                            <input id="rzpCVV" type="password" placeholder="•••" maxlength="3"
+                                style="width:100%;padding:.65rem .9rem;border:1.5px solid #ddd;border-radius:6px;font-size:.9rem;">
+                        </div>
+                    </div>
+                    <button onclick="submitPayment()"
+                        style="margin-top:1.25rem;width:100%;padding:.75rem;background:#2d74da;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:.95rem;cursor:pointer;">Pay
+                        ₹<span class="rzpAmountBtn">0.00</span></button>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <!-- ───────────────────────────────────────────────── -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script>
+        const paymentData = JSON.parse(sessionStorage.getItem('paymentData') || '{}');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateSummary();
+        });
+
+        function updateSummary() {
+            const amount = parseFloat(paymentData.amount) || 0;
+            const charge = parseFloat(paymentData.charge) || 0;
+            const total = amount + charge;
+
+            document.getElementById('summaryAmount').textContent = `₹${amount.toFixed(2)}`;
+            document.getElementById('summaryCharge').textContent = `₹${charge.toFixed(2)}`;
+            document.getElementById('summaryTotal').textContent = `₹${total.toFixed(2)}`;
+
+            // Sync amount into modal
+            document.getElementById('rzpAmount').textContent = `₹${total.toFixed(2)}`;
+            document.querySelectorAll('.rzpAmountBtn').forEach(el => el.textContent = total.toFixed(2));
+        }
+
+        function openRazorpayModal() {
+            const overlay = document.getElementById('rzpOverlay');
+            overlay.style.display = 'flex';
+        }
+
+        function closeRazorpayModal() {
+            document.getElementById('rzpOverlay').style.display = 'none';
+        }
+
+        function switchTab(tab, btn) {
+            ['upi', 'card'].forEach(t => {
+                document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+            });
+            document.querySelectorAll('.rzp-tab').forEach(b => {
+                b.style.color = '#888';
+                b.style.borderBottom = 'none';
+            });
+            btn.style.color = '#2d74da';
+            btn.style.borderBottom = '2px solid #2d74da';
+        }
+
+        let selectedBank = null;
+        function selectBank(el, name) {
+            document.querySelectorAll('.rzp-bank').forEach(b => {
+                b.style.borderColor = '#eee';
+                b.style.background = '#fff';
+            });
+            el.style.borderColor = '#2d74da';
+            el.style.background = '#eef4ff';
+            selectedBank = name;
+        }
+
+        function submitPayment() {
+            const btn = event.target.closest('button');
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            // Simulate network delay then redirect to success
+            setTimeout(() => {
+                sessionStorage.removeItem('paymentData');
+                sessionStorage.removeItem('transactionId');
+                sessionStorage.removeItem('totalAmount');
+                window.location.href = '/payment_success/';
+            }, 1800);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('rzpOverlay').addEventListener('click', function (e) {
+            if (e.target === this) closeRazorpayModal();
+        });
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        }
+
+        function logout() {
+            window.location.href = '/auth/logout/';
+        }
+
+        document.addEventListener('click', function (e) {
+            const profileSection = document.querySelector('.profile-section');
+            const menu = document.getElementById('profileMenu');
+            if (profileSection && !profileSection.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

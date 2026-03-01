@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Issue - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="mb-4 text-center">
+                            <div class="display-1 text-warning">⚠</div>
+                        </div>
+                        <h2 class="card-title mb-4 text-center">Payment Amount Mismatch</h2>
+                        <p class="text-muted text-center mb-4">
+                            The amount you paid doesn't match the expected amount
+                        </p>
+
+                        <div class="alert alert-warning" role="alert">
+                            <p class="mb-1"><strong>Expected Amount:</strong> ₹<span id="expectedAmount">0</span></p>
+                            <p class="mb-0"><strong>Received Amount:</strong> ₹<span id="receivedAmount">0</span></p>
+                        </div>
+
+                        <p class="text-center mb-4">
+                            Please choose one of the following options:
+                        </p>
+
+                        <div class="d-grid gap-3">
+                            <button class="btn btn-danger btn-lg" id="refundBtn">
+                                <strong>Instant Refund</strong>
+                                <small class="d-block">Refund the entire amount immediately</small>
+                            </button>
+                            <button class="btn btn-success btn-lg" id="investBtn">
+                                <strong>Invest Amount</strong>
+                                <small class="d-block">Invest at 1% monthly return</small>
+                            </button>
+                        </div>
+
+                        <div class="alert alert-info mt-3" role="alert">
+                            If you requested the wrong credit limit, we recommend choosing the refund option.
+                        </div>
+
+                        <div id="successAlert" class="alert alert-success mt-3" style="display: none;"></div>
+                        <div id="errorAlert" class="alert alert-danger mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/payment.js"></script>
+</body>
+
+</html>

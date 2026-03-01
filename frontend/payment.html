@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <h2 class="card-title mb-4 text-center">Payment via UPI</h2>
+                        
+                        <div class="text-center mb-4">
+                            <div class="display-4 text-primary">₹<span id="paymentAmount">0</span></div>
+                            <p class="text-muted">Total amount to pay</p>
+                        </div>
+
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Transaction ID:</strong></p>
+                                <p id="transactionId" class="text-monospace">-</p>
+                                <p class="mb-1 mt-3"><strong>UPI Reference:</strong></p>
+                                <p id="upiRef" class="text-monospace">-</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <strong>OTP Sent!</strong> You will receive an OTP on your registered phone.
+                        </div>
+
+                        <form id="otpForm">
+                            <div class="mb-3">
+                                <label for="otp" class="form-label">Enter OTP</label>
+                                <input type="text" class="form-control form-control-lg text-center" 
+                                       id="otp" placeholder="000000" maxlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg w-100">Verify Payment</button>
+                        </form>
+
+                        <div id="errorAlert" class="alert alert-danger mt-3" style="display: none;"></div>
+                        <div id="successAlert" class="alert alert-success mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>

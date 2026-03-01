@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <style>
+        body {
+            background: var(--light);
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 3rem 0 5rem;
+        }
+
+        .page-hero h1 {
+            color: var(--white);
+            margin: 0;
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, 0.85);
+            margin: 0.25rem 0 0;
+        }
+
+        .settings-canvas {
+            max-width: 720px;
+            margin: -3.5rem auto 4rem;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .settings-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .settings-card-header {
+            padding: 1.1rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .settings-card-header .icon {
+            font-size: 1.1rem;
+        }
+
+        .settings-card-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        .settings-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form fields */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 520px) {
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field-single {
+            margin-bottom: 1rem;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.4rem;
+        }
+
+        .field-input {
+            width: 100%;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            padding: 0.7rem 0.9rem;
+            font-size: 0.95rem;
+            color: var(--dark);
+            background: var(--white);
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .field-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .field-input:disabled {
+            background: var(--gray-100);
+            color: var(--gray-500);
+            cursor: not-allowed;
+        }
+
+        .field-hint {
+            font-size: 0.78rem;
+            color: var(--gray-400);
+            margin-top: 0.3rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.65rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Alert */
+        .alert-success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #7f1d1d;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        /* Info row */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 0.9rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row .label {
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .info-row .value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Danger zone */
+        .danger-card .settings-card-header {
+            border-bottom-color: #fecaca;
+        }
+
+        .danger-card .settings-card-header h3 {
+            color: var(--danger);
+        }
+
+        .danger-note {
+            font-size: 0.88rem;
+            color: var(--gray-500);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .btn-danger {
+            background: var(--white);
+            color: var(--danger);
+            border: 1.5px solid var(--danger);
+            border-radius: var(--radius-md);
+            padding: 0.65rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #fef2f2;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-box h3 {
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-box p {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: var(--gray-100);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gray-700);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/" class="logo">💳 CredHand</a>
+            </div>
+            <div class="header-right">
+                <ul class="nav-links">
+                    <li><a href="/dashboard/">Dashboard</a></li>
+                    <li><a href="/transaction_history/">History</a></li>
+                </ul>
+                <div class="profile-section">
+                    <button class="profile-btn" onclick="toggleProfileMenu()">👤</button>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="/auth/profile/">My Profile</a>
+                        <a href="/auth/settings/">Settings</a>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="page-hero">
+        <div style="max-width: 720px; margin: 0 auto; padding: 0 1.5rem;">
+            <h1>Settings</h1>
+            <p>Manage your account preferences</p>
+        </div>
+    </div>
+
+    <div class="settings-canvas">
+
+        {% if success %}
+        <div class="alert-success">✓ {{ success }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="alert-error">✗ {{ error }}</div>
+        {% endif %}
+
+        <!-- Profile Info -->
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <span class="icon">👤</span>
+                <h3>Personal Information</h3>
+            </div>
+            <div class="settings-card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_profile">
+                    <div class="field-row">
+                        <div>
+                            <label class="field-label">First Name</label>
+                            <input class="field-input" type="text" name="first_name" value="{{ user.first_name }}"
+                                placeholder="First name">
+                        </div>
+                        <div>
+                            <label class="field-label">Last Name</label>
+                            <input class="field-input" type="text" name="last_name" value="{{ user.last_name }}"
+                                placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="field-single">
+                        <label class="field-label">Email Address</label>
+                        <input class="field-input" type="email" value="{{ user.email }}" disabled>
+                        <div class="field-hint">Email is managed by your Google account and cannot be changed here.
+                        </div>
+                    </div>
+                    <div class="field-single">
+                        <label class="field-label">Phone Number</label>
+                        <input class="field-input" type="tel" name="phone" value="{{ user.phone|default:'' }}"
+                            placeholder="+91 00000 00000">
+                    </div>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Details (read-only) -->
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <span class="icon">🔒</span>
+                <h3>Account Details</h3>
+            </div>
+            <div class="settings-card-body">
+                <div class="info-row">
+                    <span class="label">Sign-in Method</span>
+                    <span class="value">{{ user.oauth_provider|title|default:"Email" }} OAuth</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">KYC Status</span>
+                    <span class="value">
+                        {% if user.kyc_status == 'verified' %}✅ Verified
+                        {% elif user.kyc_status == 'rejected' %}❌ Rejected
+                        {% else %}⏳ Pending{% endif %}
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Member Since</span>
+                    <span class="value">{{ user.created_at|date:"d M Y" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Account ID</span>
+                    <span class="value" style="font-family: monospace; font-size: 0.85rem;">#{{ user.id }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-card danger-card">
+            <div class="settings-card-header">
+                <span class="icon">⚠️</span>
+                <h3>Danger Zone</h3>
+            </div>
+            <div class="settings-card-body">
+                <p class="danger-note">
+                    Deleting your account is permanent and cannot be undone. All your transactions and data will be
+                    removed.
+                </p>
+                <button class="btn-danger" onclick="document.getElementById('deleteModal').classList.add('active')">
+                    Delete My Account
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <h3>⚠️ Delete Account</h3>
+            <p>This action is <strong>irreversible</strong>. Type your email address <strong>{{ user.email }}</strong>
+                to confirm.</p>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_account">
+                <div class="field-single" style="margin-bottom: 1rem;">
+                    <input class="field-input" type="text" name="confirm_delete" placeholder="{{ user.email }}">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel"
+                        onclick="document.getElementById('deleteModal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn-danger">Yes, Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleProfileMenu() {
+            document.getElementById('profileMenu').classList.toggle('active');
+        }
+
+        document.addEventListener('click', function (e) {
+            const ps = document.querySelector('.profile-section');
+            if (!ps.contains(e.target)) {
+                document.getElementById('profileMenu').classList.remove('active');
+            }
+        });
+
+        function logout() {
+            window.location.href = '/auth/logout/';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Request Card - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/design-system.css">
+    <style>
+        body {
+            background: var(--light);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 1.25rem 0;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin: -1.5rem auto 2rem;
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        .form-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .form-subtitle {
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--gray-200);
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .step-badge.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        .form-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            background-color: var(--white);
+            color: var(--dark);
+        }
+
+        .form-select option {
+            background-color: var(--white);
+            color: var(--dark);
+        }
+
+        .form-select option:checked {
+            background: linear-gradient(var(--primary), var(--primary));
+            background-color: var(--primary) !important;
+            color: var(--white);
+        }
+
+        .charges-summary {
+            background: var(--light);
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        .charge-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .charge-row:last-child {
+            border-bottom: none;
+        }
+
+        .charge-label {
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .charge-amount {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .charge-row.total {
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+            border-top: 2px solid var(--primary);
+            border-bottom: none;
+        }
+
+        .charge-row.total .charge-label {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .charge-row.total .charge-amount {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breakdown-label {
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            margin-bottom: 0.25rem;
+        }
+
+        .breakdown-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Profile Menu */
+        .profile-section {
+            position: relative;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-btn:hover {
+            background: var(--light);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            min-width: 200px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .profile-menu.active {
+            display: block;
+        }
+
+        .profile-menu a,
+        .profile-menu button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            text-align: left;
+            color: var(--gray-700);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .profile-menu a:hover,
+        .profile-menu button:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .profile-menu a:first-child,
+        .profile-menu button:first-child {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem;
+        }
+
+        .profile-menu .logout-btn {
+            color: var(--danger);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .profile-menu .logout-btn:hover {
+            background: #fef2f2;
+            color: #7f1d1d;
+        }
+
+        @media (max-width: 768px) {
+            .form-card {
+                padding: var(--spacing-xl);
+            }
+
+            .form-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/" class="logo">💳 CredHand</a>
+            </div>
+            <div class="header-right">
+                <ul class="nav-links">
+                    <li><a href="/dashboard/">Dashboard</a></li>
+                    <li><a href="/transaction_history/">History</a></li>
+                </ul>
+                <div class="profile-section">
+                    <button class="profile-btn" onclick="toggleProfileMenu()">👤</button>
+                    <div class="profile-menu" id="profileMenu">
+                        <a href="/auth/profile/">My Profile</a>
+                        <a href="/auth/settings/">Settings</a>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container text-center">
+            <h1>Request a Credit Card</h1>
+            <p>Quick, secure, and instant credit card requests</p>
+        </div>
+    </section>
+
+    <!-- Form -->
+    <div class="container">
+        <div class="form-card">
+            <form id="lendingForm">
+                <!-- Purchase Type -->
+                <div class="form-section">
+                    <label for="purchaseType" class="form-label">
+                        <span>📌</span>
+                        What's your purpose?
+                    </label>
+                    <select class="form-control form-select" id="purchaseType" required>
+                        <option value="">Select a category</option>
+                        <option value="flight">✈️ Flight Booking</option>
+                        <option value="shopping">🛍️ Online Shopping</option>
+                        <option value="ecomm">📦 E-Commerce</option>
+                        <option value="bills">📄 Bills Payment</option>
+                        <option value="rent">🏠 Rent</option>
+                        <option value="others">⭐ Others</option>
+                    </select>
+                    <p class="help-text">For reference only – doesn't affect your card choice</p>
+                </div>
+
+                <!-- Credit Card Selection -->
+                <div class="form-section">
+                    <label for="cardSelect" class="form-label">
+                        <span>💳</span>
+                        Select a Credit Card
+                    </label>
+                    <div id="cardSelect">
+                        <div class="flex-center p-lg">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amount -->
+                <div class="form-section">
+                    <label for="amount" class="form-label">
+                        <span>₹</span>
+                        How much do you need?
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="amount" placeholder="Enter amount" min="10"
+                            max="100000" required>
+                    </div>
+                    <p class="help-text">Min: ₹10 | Max: ₹1,00,000</p>
+                </div>
+
+                <!-- Charges Summary -->
+                <div class="charges-summary">
+                    <div class="charge-row">
+                        <span class="charge-label">Amount to Borrow</span>
+                        <span class="charge-amount" id="displayAmount">₹0.00</span>
+                    </div>
+                    <div class="charge-row">
+                        <span class="charge-label">Service Charge</span>
+                        <span class="charge-amount" id="displayCharge">₹0.00</span>
+                    </div>
+                    <div class="charge-row total">
+                        <span class="charge-label">Total Payment</span>
+                        <span class="charge-amount" id="displayTotal">₹0.00</span>
+                    </div>
+                    <div class="breakdown-grid" id="chargeBreakdown"></div>
+                </div>
+
+                <!-- Disclaimer -->
+                <p style="font-size:0.68rem;color:#c8c8c8;line-height:1.4;margin-bottom:0.5rem;text-align:justify;">
+                    By proceeding, you acknowledge that the approved credit limit applied to your account corresponds
+                    solely to the requested borrow amount stated above. The applicable service charge, processing fee,
+                    and any ancillary platform costs are non-refundable, do not form part of your credit allocation, and
+                    will be debited separately from your registered payment method. Continued use constitutes acceptance
+                    of CredHand's full Terms &amp; Conditions and Fee Schedule (v4.2, effective 01-Jan-2026).
+                </p>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Proceed to Payment →
+                </button>
+            </form>
+
+            <!-- Error Alert -->
+            <div id="errorAlert" class="alert alert-danger mt-lg hidden"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js?v=3"></script>
+    <script src="/static/js/lending.js?v=3"></script>
+    <script>
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const profileSection = document.querySelector('.profile-section');
+            if (profileSection && !profileSection.contains(event.target)) {
+                const menu = document.getElementById('profileMenu');
+                if (menu) menu.classList.remove('active');
+            }
+        });
+
+        function logout() {
+            window.location.href = '/auth/logout/';
+        }
+    </script>
+</body>
+
+</html>

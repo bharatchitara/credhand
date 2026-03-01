@@ -1,0 +1,54 @@
+[
+    {
+        "model": "cards.creditcard",
+        "pk": 1,
+        "fields": {
+            "card_name": "HDFC Bank Cashback Card",
+            "card_issuer": "hdfc",
+            "features": "5% cashback on flights, 2% on shopping, Zero annual fee",
+            "available_limit": "100000.00",
+            "is_active": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "cards.creditcard",
+        "pk": 2,
+        "fields": {
+            "card_name": "ICICI Airlines Infinite",
+            "card_issuer": "icici",
+            "features": "Double points on airline bookings, Free airport lounge",
+            "available_limit": "150000.00",
+            "is_active": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "cards.creditcard",
+        "pk": 3,
+        "fields": {
+            "card_name": "Axis MyZone Credit Card",
+            "card_issuer": "axis",
+            "features": "4X rewards on shopping, Restaurant & fuel",
+            "available_limit": "120000.00",
+            "is_active": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "cards.creditcard",
+        "pk": 4,
+        "fields": {
+            "card_name": "SBI SimplyCLICK Credit Card",
+            "card_issuer": "sbi",
+            "features": "10X rewards on e-commerce, 5% cashback on bills",
+            "available_limit": "100000.00",
+            "is_active": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
+        }
+    }
+]

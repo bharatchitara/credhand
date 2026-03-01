@@ -1,0 +1,107 @@
+# ── Sensitive / Credentials ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+service_account*.json
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+sdist/
+wheels/
+pip-wheel-metadata/
+.installed.cfg
+MANIFEST
+
+# ── Virtual Environments ──────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+ENV/
+backend/venv/
+
+# ── Django ────────────────────────────────────────────────────────────────────
+*.sqlite3
+db.sqlite3
+local_settings.py
+backend/staticfiles/
+backend/media/
+backend/logs/
+logs/
+*.log
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+.tox/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+nosetests.xml
+test-results/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ── Editors / IDEs ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.tmp
+
+# ── Node (if ever added) ──────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnp/
+.pnp.js
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Docs / Reports (generated / redundant text files) ────────────────────────
+docs/COMPLETION_REPORT.md
+docs/FILE_INDEX.txt
+REDESIGN_COMPLETION_REPORT.md
+SERVICE_CHARGE_MIGRATION.md
+VERIFICATION_CHECKLIST.md
+HOW_TO_RUN_AND_TEST.md
+test_service_charge.py
+backend/test_brokerage.py
+tests/
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.pid
+*.seed
+*.gz
+*.zip
+*.tar
+*.rar

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success - CredHand</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-4">
+                            <div class="display-1 text-success">✓</div>
+                        </div>
+                        <h2 class="card-title mb-4">Payment Successful!</h2>
+                        <p class="text-muted mb-4">Your credit card limit has been approved</p>
+
+                        <div class="alert alert-info" role="alert">
+                            <p class="mb-0"><strong>Please save these details securely</strong></p>
+                        </div>
+
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Card Number</p>
+                                    <p class="h5 text-monospace" id="cardNumber">**** **** **** 1234</p>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1">Expiry Date</p>
+                                        <p class="h6 text-monospace" id="expiryDate">MM/YY</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1">CVV</p>
+                                        <p class="h6 text-monospace" id="cvv">***</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div>
+                                    <p class="text-muted mb-1">Cardholder Name</p>
+                                    <p class="h6 text-monospace" id="cardholderName">CREDHAND USER</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a href="dashboard.html" class="btn btn-primary btn-lg">Back to Dashboard</a>
+                            <a href="transaction_history.html" class="btn btn-secondary">View History</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>
