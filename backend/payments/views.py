@@ -1,9 +1,12 @@
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 import json
+import hmac
+import hashlib
 import logging
 from .models import Payment, OTP
 from transactions.models import Transaction
@@ -11,6 +14,94 @@ from .services import initiate_upi_payment, process_payment_callback
 from .utils import generate_otp
 
 logger = logging.getLogger(__name__)
+
+
+@login_required(login_url='authentication:login')
+@require_http_methods(["POST"])
+def create_order(request):
+    """Create a Razorpay order. Frontend opens checkout.js with the returned order_id."""
+    try:
+        data = json.loads(request.body)
+        transaction_id = data.get('transaction_id')
+
+        transaction = Transaction.objects.get(id=transaction_id, user=request.user)
+        amount_paise = int(transaction.total_amount * 100)  # Razorpay needs paise
+
+        key_id     = getattr(settings, 'UPI_KEY_ID', '').strip()
+        key_secret = getattr(settings, 'UPI_KEY_SECRET', '').strip()
+        if not key_id or not key_secret:
+            logger.error("Razorpay keys not configured – add UPI_KEY_ID and UPI_KEY_SECRET to .env")
+            return JsonResponse(
+                {'status': 'error', 'message': 'Payment gateway not configured. Contact support.'},
+                status=500,
+            )
+
+        import razorpay
+        client = razorpay.Client(auth=(key_id, key_secret))
+        order = client.order.create({
+            "amount": amount_paise,
+            "currency": "INR",
+            "receipt": f"credhand_{transaction_id}",
+            "payment_capture": 1,
+        })
+
+        return JsonResponse({
+            'status': 'success',
+            'order_id': order['id'],
+            'amount': amount_paise,
+            'currency': 'INR',
+        })
+
+    except Transaction.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Transaction not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error creating Razorpay order: {e}")
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required(login_url='authentication:login')
+@require_http_methods(["POST"])
+def verify_signature(request):
+    """Verify Razorpay payment signature and mark transaction as complete."""
+    try:
+        data = json.loads(request.body)
+        transaction_id      = data.get('transaction_id')
+        razorpay_order_id   = data.get('razorpay_order_id')
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_signature  = data.get('razorpay_signature', '')
+
+        transaction = Transaction.objects.get(id=transaction_id, user=request.user)
+
+        # Verify HMAC-SHA256 signature
+        body = f"{razorpay_order_id}|{razorpay_payment_id}"
+        expected = hmac.new(
+            settings.UPI_KEY_SECRET.encode(),
+            body.encode(),
+            hashlib.sha256,
+        ).hexdigest()
+
+        if not hmac.compare_digest(expected, razorpay_signature):
+            return JsonResponse({'status': 'error', 'message': 'Invalid payment signature'}, status=400)
+
+        # Mark transaction and create payment record
+        payment, _ = Payment.objects.get_or_create(
+            transaction=transaction,
+            defaults={'amount_paid': transaction.total_amount, 'payment_status': 'initiated'},
+        )
+        payment.payment_status = 'completed'
+        payment.upi_ref = razorpay_payment_id
+        payment.save()
+
+        transaction.status = 'payment_success'
+        transaction.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Payment verified'})
+
+    except Transaction.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Transaction not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error verifying signature: {e}")
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
 @login_required(login_url='authentication:login')

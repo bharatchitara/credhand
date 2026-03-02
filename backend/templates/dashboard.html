@@ -193,6 +193,110 @@
             opacity: 0.6;
         }
 
+        /* ── How It Works ─────────────────────────────────────── */
+        .how-it-works {
+            margin-bottom: 4rem;
+        }
+
+        .hiw-grid {
+            display: grid;
+            grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr;
+            align-items: center;
+            gap: 0;
+        }
+
+        .hiw-step {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem 1.25rem 1.5rem;
+            text-align: center;
+            border: 2px solid var(--gray-200);
+            position: relative;
+            transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
+        }
+
+        .hiw-step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 28px rgba(59, 130, 246, .13);
+            transform: translateY(-3px);
+        }
+
+        .hiw-step .step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: .85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto .9rem;
+        }
+
+        .hiw-step.step-2 .step-num {
+            background: #7c3aed;
+        }
+
+        .hiw-step.step-3 .step-num {
+            background: #0891b2;
+        }
+
+        .hiw-step.step-4 .step-num {
+            background: #059669;
+        }
+
+        .hiw-step .step-icon {
+            font-size: 2rem;
+            margin-bottom: .75rem;
+            display: block;
+        }
+
+        .hiw-step .step-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: .4rem;
+        }
+
+        .hiw-step .step-desc {
+            font-size: .8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .hiw-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .hiw-arrow svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--gray-400);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        @media (max-width: 900px) {
+            .hiw-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .hiw-arrow {
+                transform: rotate(90deg);
+                margin: .25rem auto;
+                height: 28px;
+            }
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 padding: 0 1rem;
@@ -278,6 +382,71 @@
                 <h3 class="action-title">History</h3>
                 <p class="action-desc">View transaction history</p>
             </a>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works">
+            <h2 class="section-title">How It Works</h2>
+            <div class="hiw-grid">
+
+                <!-- Step 1 -->
+                <div class="hiw-step step-1">
+                    <div class="step-num">1</div>
+                    <span class="step-icon">🛒</span>
+                    <div class="step-title">Select &amp; Request</div>
+                    <p class="step-desc">Choose your payment type and enter the amount you need. Pick the card that fits
+                        your requirement.</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hiw-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="hiw-step step-2">
+                    <div class="step-num" style="background:#7c3aed;">2</div>
+                    <span class="step-icon">💸</span>
+                    <div class="step-title">Complete Payment</div>
+                    <p class="step-desc">Pay the service charge via UPI or Debit Card through the secure Razorpay
+                        checkout.</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hiw-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="hiw-step step-3">
+                    <div class="step-num" style="background:#0891b2;">3</div>
+                    <span class="step-icon">💳</span>
+                    <div class="step-title">Card Details Revealed</div>
+                    <p class="step-desc">Once payment is confirmed, the system instantly shares the card number, expiry
+                        date and CVV.</p>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hiw-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="hiw-step step-4">
+                    <div class="step-num" style="background:#059669;">4</div>
+                    <span class="step-icon">🔐</span>
+                    <div class="step-title">OTP Authorisation</div>
+                    <p class="step-desc">When the charge amount matches, the system sends an OTP to authorise and
+                        complete your transaction.</p>
+                </div>
+
+            </div>
         </div>
 
         <!-- Stats Section -->

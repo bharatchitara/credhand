@@ -54,7 +54,11 @@ def transaction_history_view(request):
 @login_required(login_url='authentication:login')
 def payment_view(request):
     """Payment page"""
-    return render(request, 'payment.html', {'user': request.user})
+    from django.conf import settings
+    return render(request, 'payment.html', {
+        'user': request.user,
+        'rzp_key_id': getattr(settings, 'UPI_KEY_ID', ''),
+    })
 
 
 @login_required(login_url='authentication:login')
